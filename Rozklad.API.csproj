@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+      <PackageReference Include="MongoDB.Driver" Version="2.11.3" />
+    </ItemGroup>
+
+    <!-- <ItemGroup>
+      <_ContentIncludedByDefault Remove="MongoOrmTest\obj\MongoOrmTest.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="MongoOrmTest\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="MongoOrmTest\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="Rozklad.API.Tests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="Rozklad.API.Tests\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="Rozklad.API.Tests\obj\Rozklad.API.Tests.csproj.nuget.dgspec.json" />
+    </ItemGroup> -->
+
+    <ItemGroup>
+      <Compile Remove="DataAccess\Configuration\**" />
+      <Compile Remove="DataAccess\DbCollection.cs" />
+      <Compile Remove="DataAccess\DbContext.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="DataAccess\Configuration\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="DataAccess\Configuration\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="DataAccess\Configuration\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MongoOrm\MongoOrm.csproj" />
+    </ItemGroup>
+
+
+</Project>
