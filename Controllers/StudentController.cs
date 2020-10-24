@@ -32,7 +32,17 @@ namespace Rozklad.API.Controllers
             var studentDto =_mapper.Map<Entities.Student, Models.StudentDto>(studentEntity);
             return Ok(studentDto);
         }
-
+        [HttpPost("login")]
+        public ActionResult<string> LoginStudent([FromBody] StudentLoginData studentData)
+        {
+            var studentEntity = _repository.GetStudentByLastname(studentData.Lastname, studentData.Group);
+            if (studentEntity == null)
+            {
+                return Unauthorized();
+            }
+            // var studentDto = _mapper.Map<Entities.Student, Models.StudentDto>(studentEntity);
+            return Ok(new { student_id = studentEntity.Id});
+        }
         [HttpPost]
         public ActionResult<StudentDto> Create([FromBody] StudentForCreatingDto studentForCreatingDto)
         {

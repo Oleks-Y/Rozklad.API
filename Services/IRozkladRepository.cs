@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rozklad.API.Entities;
 
 namespace Rozklad.API.Services
@@ -14,7 +15,7 @@ namespace Rozklad.API.Services
         IEnumerable<Subject> GetSubjectsForStudent(string studentId, bool withRequired);
         IEnumerable<Student> GetStudents();
         Student GetStudent(string studentId);
-
+        Student GetStudentByLastname(string lastname, string group);
         void AddSubject(Subject subject);
         void AddLesson(Lesson lesson);
         void AddStudent(Student student);
@@ -32,6 +33,7 @@ namespace Rozklad.API.Services
         public LessonWithSubject GetLessonWithSubject(string lessonId);
 
         public IEnumerable<LessonWithSubject> GetLessonsWithSubjectsForStudent(string studentId);
+        public Task<IEnumerable<LessonWithSubject>> GetLessonsWithSubjectsForStudentAsync(string studentId);
         void Save();
 
     }

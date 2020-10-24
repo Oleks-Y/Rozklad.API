@@ -19,12 +19,10 @@ namespace Rozklad.API.Helpers
         public override bool IsValid(object value)
         {
             var list = value as List<string>;
-            if (list == null)
-            {
-                return false;
-            }
-
-            return list.All(id => ObjectId.TryParse(id, out _));
+            return 
+                list != null 
+                   && 
+                   list.All(id => ObjectId.TryParse(id, out _));
         }
     }
 }

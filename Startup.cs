@@ -57,7 +57,11 @@ namespace Rozklad.API
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyHeader();
+            });
             app.UseRouting();
 
             app.UseAuthorization();

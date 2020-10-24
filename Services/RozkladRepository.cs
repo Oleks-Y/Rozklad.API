@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using Rozklad.API.DataAccess;
 using Rozklad.API.Entities;
@@ -49,6 +50,11 @@ namespace Rozklad.API.Services
         public Student GetStudent(string studentId)
         {
             return _context.Students.FirstOrDefault(s => s.Id == studentId);
+        }
+
+        public Student GetStudentByLastname(string lastname, string group)
+        {
+            return _context.Students.FirstOrDefault(s => s.LastName == lastname && s.Group == group.ToLower());
         }
 
         public void AddSubject(Subject subject)
@@ -183,19 +189,70 @@ namespace Rozklad.API.Services
             //Todo add asyncronus grouping of data
             //Get required lessons 
             var requiredSubjects = _context.Subjects.Where(s => s.IsRequired);
-            var requiredLessons = 
-                (from subject in requiredSubjects 
-                    from lesson in _context.Lessons 
-                    where lesson.Subject.ToString() == subject.Id 
+            var requiredLessons =
+                (from subject in requiredSubjects
+                    from lesson in _context.Lessons
+                    where lesson.Subject.ToString() == subject.Id
                     select GetLessonWithSubject(lesson.Id)).ToList();
             //Get optional lessons
             var optionalSubjectsForStudent = _context.Students.Get(studentId).Subjects.ToList();
-            var optionalLessons = 
-                (from subjectId in optionalSubjectsForStudent 
-                    from lesson in _context.Lessons 
+            var optionalLessons =
+                (from subjectId in optionalSubjectsForStudent
+                    from lesson in _context.Lessons
                     select GetLessonWithSubject(lesson.Id)).ToList();
             var lessonsResult = optionalLessons.Concat(requiredLessons);
             return lessonsResult;
+        }
+
+        public async Task<IEnumerable<LessonWithSubject>> GetLessonsWithSubjectsForStudentAsync(string studentId)
+        {
+            //Todo add asyncronus grouping of data
+            //Get required lessons 
+            var lessons = (IEnumerable<Lesson>) _context.Lessons;
+            var taskRequiredLessons = Task.Run(() =>
+            {
+                var requiredSubjects = _context.Subjects.Where(s => s.IsRequired);
+                var requiredLessons =
+                    (from subject in requiredSubjects.AsParallel()
+                        from lesson in lessons.AsParallel()
+                        where lesson.Subject.ToString() == subject.Id
+                        select new LessonWithSubject
+                        {
+                            Id = lesson.Id,
+                            Type = lesson.Type,
+                            Subject = subject,
+                            Week = lesson.Week,
+                            TimeStart = lesson.TimeStart,
+                            DayOfWeek = lesson.DayOfWeek
+                        }).ToList();
+                return requiredLessons;
+            });
+            //Get optional lessons
+            var taskoptionalLessons = Task.Run(() =>
+            {
+                var optionalSubjectsForStudentIds = _context.Students.Get(studentId).Subjects.ToList();
+                var optionalSubjectsForStudent =
+                    _context.Subjects.Where(s => optionalSubjectsForStudentIds.Contains(s.Id));
+                var optionalLessons =
+                    (from subject in optionalSubjectsForStudent.AsParallel()
+                        from lesson in lessons.AsParallel()
+                        where lesson.Subject.ToString() == subject.Id
+                        select new LessonWithSubject
+                        {
+                            Id = lesson.Id,
+                            Type = lesson.Type,
+                            Subject = subject,
+                            Week = lesson.Week,
+                            TimeStart = lesson.TimeStart,
+                            DayOfWeek = lesson.DayOfWeek
+                        }).ToList();
+                return optionalLessons;
+            });
+
+            // var lessonsResult =(await taskoptionalLessons).Concat(await taskRequiredLessons);
+            // return lessonsResult; 
+            var lessonsResult = await Task.WhenAll(taskoptionalLessons, taskRequiredLessons);
+            return lessonsResult.SelectMany(lesson => lesson);
         }
 
         public IEnumerable<Subject> GetSubjectsForStudent(string studentId, bool withRequired)
