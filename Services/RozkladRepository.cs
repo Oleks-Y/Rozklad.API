@@ -28,6 +28,17 @@ namespace Rozklad.API.Services
             return _context.Subjects.FirstOrDefault(s => s.Id == subjectId);
         }
 
+        public IEnumerable<Subject> GetAvailableSubjectsForStudent(string studentId)
+        {
+            // get student subjects 
+            // get all subjects, that not in subjects of student
+            var student= _context.Students.FirstOrDefault(student => student.Id == studentId);
+            if (studentId == null) return null;
+            var studentSubjects = student.Subjects;
+            var subjects = _context.Subjects.Where(subject => !studentSubjects.Contains(subject.Id) && !subject.IsRequired);
+            return subjects;
+        }
+
         public IEnumerable<Lesson> GetLessons()
         {
             return _context.Lessons.OrderBy(l => l.Week)
@@ -39,6 +50,20 @@ namespace Rozklad.API.Services
         public Lesson GetLesson(string lessonId)
         {
             return _context.Lessons.FirstOrDefault(l => l.Id == lessonId);
+        }
+
+        public void AddSubjectToStudent(string studentId, string subjectId)
+        {
+            var student = _context.Students.Get(studentId);
+            student.Subjects = student.Subjects.Append(subjectId);
+            _context.Students.Update(studentId, student);
+        }
+
+        public void DeleteSubjectFromStudent(string studentId, string subjectId)
+        {
+            var student = _context.Students.Get(studentId);
+            student.Subjects = student.Subjects.Where(x=>x != subjectId).ToList();
+            _context.Students.Update(studentId, student);
         }
 
         public IEnumerable<Student> GetStudents()

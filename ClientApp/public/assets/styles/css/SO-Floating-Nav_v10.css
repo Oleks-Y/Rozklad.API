@@ -1,0 +1,48 @@
+#nt-compact {
+  float: left;
+  width: 60px;
+  background-color: #222;
+  height: 100%;
+}
+
+#nt-compact ul {
+  margin: 10px 0px 0px 0px;
+  padding: 0px;
+}
+
+#nt-compact ul li {
+  width: 60px;
+  border-bottom: 0px #333 solid;
+  list-style: none;
+  text-align: center;
+}
+
+#nt-compact ul li:hover {
+  background: #f44336;
+}
+
+#nt-compact ul li a {
+  font-size: 200%;
+  padding: 10px;
+  color: #ccc;
+  text-shadow: 0px 1px 0px #bbb;
+  position: relative;
+}
+
+#nt-compact ul li a div.nt-tooltip {
+  position: absolute;
+  top: 5px;
+  left: 53px;
+  font-size: 60%;
+  background: #f44336;
+  padding: 9.5px;
+  padding-right: 20px;
+  border-right: 5px #222 solid;
+  border-radius: 0px 10px 10px 0px;
+}
+
+#nt-compact ul li a div.nt-tooltip p {
+  margin: 0px;
+  padding: 0px;
+}
+
