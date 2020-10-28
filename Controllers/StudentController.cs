@@ -111,8 +111,12 @@ namespace Rozklad.API.Controllers
         }
         // It works ?
         [HttpPatch("{studentId:objectId}")]
-        public ActionResult PatchStudent(string studentId, JsonPatchDocument<StudentForUpdateDto> patchDocument)
+        public ActionResult PatchStudent(string studentId, [FromBody] JsonPatchDocument<StudentForUpdateDto> patchDocument)
         {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
             var studentFromRepo = _repository.GetStudent(studentId);
             if (studentId == null)
             {

@@ -5,6 +5,7 @@ import {SubjectDto} from "../models/Subject";
 import StudentAuthService from "../services/studentAuthService";
 import {subjectsService} from "../services/subjectsService";
 import {Modal, Button} from "react-bootstrap"
+import {Redirect} from "react-router-dom";
 
 interface SubjectsLayoutProps {
     loading: boolean;
@@ -12,6 +13,7 @@ interface SubjectsLayoutProps {
     subjectsChanged: boolean,
     showModal: boolean,
     subjectsToChoice: SubjectDto[] | null,
+    redirect : boolean
 }
 
 class SubjectLayout extends React.Component {
@@ -25,7 +27,8 @@ class SubjectLayout extends React.Component {
         subjects: null,
         subjectsChanged: false,
         showModal: false,
-        subjectsToChoice: null
+        subjectsToChoice: null,
+        redirect : false
     }
     subjectIds: string[] = []
 
@@ -82,7 +85,12 @@ class SubjectLayout extends React.Component {
 
     addSubject(subject : SubjectDto) {
         let subjects = this.state.subjects
-        subjects?.push(subject)
+        if(subjects==null){
+            subjects = [subject]
+        }
+        else {
+            subjects?.push(subject)
+        }
         this.setState({
            subjects : subjects,
             subjectsToChoice : this.state.subjectsToChoice?.filter(s=>s.id!= subject.id),
@@ -100,21 +108,40 @@ class SubjectLayout extends React.Component {
             showModal: true
         })
     }
-
-    updateSubjects(id: string) {
-
+    setRedirect = () => {
+        this.setState({
+            redirect: true,
+        });
+    };
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            return <Redirect to={`/site`} />;
+        }
+    };
+    updateSubjects=()=> {
+        const studentId = new StudentAuthService().getStudentID();
+        const sublects = this.state.subjects
+        try {
+            subjectsService.updateSubjects(studentId, sublects?.map(s => s.id) as string[])
+                .then(() => this.setRedirect())
+                .catch(() => alert("Something went wrong! Try refresh page"))
+        }catch (e) {
+            console.error(e)
+        }
     }
 
     deleteSubjectFormList = (id: string) => {
         // Todo manipulate only main subjects array a
         // Todo when subject deletes, it must be added to subjectsToChoice
         console.log(this.subjectIds)
+        const subject = this.state.subjects?.find(s=>s.id==id)
         this.subjectIds = this.subjectIds.filter(subject_id => subject_id != id)
         console.log("Yeah bitch, this fucking function works and we delete", id)
         this.setState({
             subjects: this.state.subjects?.filter(s => s.id != id),
-            subjectsChanged: true
+            subjectsChanged: true,
         })
+        this.state.subjectsToChoice?.push(subject!)
     }
 
     render() {
@@ -133,6 +160,7 @@ class SubjectLayout extends React.Component {
                         this.state.subjects?.map(s => <Subject subject={s} deleteFunc={this.deleteSubjectFormList}/>)
                     }
                 </div>
+                {this.renderRedirect()}
                 <div className="row">
                     <div className="col offset-8"><a className="btn btn-success btn-icon-split" role="button"><span
                         className="text-white-50 icon"><i className="fas fa-plus"/></span><span
@@ -155,7 +183,7 @@ class SubjectLayout extends React.Component {
                     {this.state.subjectsChanged &&
                     <div className="col offset-8"><a className="btn btn-primary btn-icon-split" role="button"><span
                         className="text-white-50 icon"><i className="fas fa-save"/></span><span
-                        className="text-white text">Save</span></a>
+                        className="text-white text" onClick={this.updateSubjects}>Save</span></a>
                     </div>}
                 </div>
             </div>)

@@ -31,20 +31,20 @@ function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navcol-1">
           <ul className="nav navbar-nav ml-auto">
-            <li className="nav-item" role="presentation">
+            <li className="nav-item" role="button">
               <Link
-                to={`/site/home`}
-                className="nav-link active"
+                to={`home`}
+                className="nav-link"
                 style={navItemStyle}
               >
                 <i className="fa fa-home" />
                 &nbsp;Home
               </Link>
             </li>
-            <li className="nav-item" role="presentation">
+            <li className="nav-item" role="button">
               <Link
-                to="site/timetable"
-                className="nav-link active"
+                to={`timetable`}
+                className="nav-link"
                 style={navItemStyle}
               >
                 <i className="fa fa-calendar" />
@@ -58,10 +58,10 @@ function Navbar() {
               </a>
             </li>
             <li className="nav-item" role="presentation">
-              <a className="nav-link active" style={navItemStyle} href="#">
+              <Link to={`subjects`} className="nav-link" style={navItemStyle} href="#">
                 <i className="fa fa-list-alt" />
                 &nbsp;Subjects
-              </a>
+              </Link>
             </li>
             <li>
               <i className="fas fa-sign-out-alt" />
