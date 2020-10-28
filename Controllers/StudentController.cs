@@ -1,6 +1,8 @@
 using System;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Rozklad.API.Entities;
 using Rozklad.API.Models;
 using Rozklad.API.Services;
@@ -107,6 +109,36 @@ namespace Rozklad.API.Controllers
 
             return NoContent();
         }
+        // It works ?
+        [HttpPatch("{studentId:objectId}")]
+        public ActionResult PatchStudent(string studentId, [FromBody] JsonPatchDocument<StudentForUpdateDto> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+            var studentFromRepo = _repository.GetStudent(studentId);
+            if (studentId == null)
+            {
+                return NotFound();
+            }
 
+            var studentToPatch = _mapper.Map<StudentForUpdateDto>(studentFromRepo);
+            patchDocument.ApplyTo(studentToPatch, ModelState);
+            if (!TryValidateModel(studentToPatch))
+            {
+                return ValidationProblem();
+            }
+
+            _mapper.Map(studentToPatch, studentFromRepo);
+            
+            _repository.UpdateStudent(studentFromRepo.Id, studentFromRepo);
+            
+            _repository.Save();
+
+            return NoContent();
+
+        }
+        
     }
 }

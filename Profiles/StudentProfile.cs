@@ -18,6 +18,8 @@ namespace Rozklad.API.Profiles
             // .ForMember(
             //     dest=>dest.Subjects,
             //     opt=>opt.MapFrom(_=> new List<string>()));
+            CreateMap<Models.StudentForUpdateDto, Entities.Student>();
+            CreateMap<Entities.Student,Models.StudentForUpdateDto>();
         }
     }
 }

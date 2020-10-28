@@ -9,10 +9,12 @@ namespace Rozklad.API.Services
         // Todo get lessons for student 
         IEnumerable<Subject> GetSubjects();
         Subject GetSubject(string subjectId);
-
+        IEnumerable<Subject> GetAvailableSubjectsForStudent(string studentId);
         IEnumerable<Lesson> GetLessons();
         Lesson GetLesson(string lessonId);
         IEnumerable<Subject> GetSubjectsForStudent(string studentId, bool withRequired);
+        void AddSubjectToStudent(string studentId, string subjectId);
+        void DeleteSubjectFromStudent(string studentId, string subjectId);
         IEnumerable<Student> GetStudents();
         Student GetStudent(string studentId);
         Student GetStudentByLastname(string lastname, string group);
