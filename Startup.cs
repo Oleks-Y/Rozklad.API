@@ -1,6 +1,7 @@
 using System;
 using AutoMapper;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Rozklad.API.DataAccess;
 using Rozklad.API.DataAccess.Configuration;
 using Rozklad.API.Helpers;
@@ -49,6 +51,16 @@ namespace Rozklad.API
             services.AddScoped<IRozkladRepository, RozkladRepository>();
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
             services.AddControllersWithViews().AddNewtonsoftJson();
+            services.AddSwaggerGen(options =>
+            {
+                options.DescribeAllEnumsAsStrings();
+                options.SwaggerDoc( "v1", new OpenApiInfo
+                {
+                    Title =  "Rozklad",
+                    Version  = "v1",
+                    Description = "Simple API"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +85,13 @@ namespace Rozklad.API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1" );
+                    
+                });
 
             app.UseSpa(spa =>
             {

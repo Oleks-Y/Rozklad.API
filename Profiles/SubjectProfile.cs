@@ -9,6 +9,8 @@ namespace Rozklad.API.Profiles
         public SubjectProfile()
         {
             CreateMap<Subject, SubjectDto>();
+            CreateMap<SubjectToUpdate, Subject>();
+            CreateMap<Subject, SubjectToUpdate>();
         }
     }
 }

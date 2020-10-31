@@ -2,6 +2,7 @@ import React, { CSSProperties } from "react";
 import { LessonWithSubject } from "../models/LessonWithSubject";
 export interface LessonProps {
   lesson: LessonWithSubject;
+  editFunc : Function
 }
 function Lesson(props: LessonProps) {
   // Todo add edit feature
@@ -23,7 +24,7 @@ function Lesson(props: LessonProps) {
             href={
               props.lesson.type === "Лек"
                 ? props.lesson.subject.lessonsZoom[0]?.url
-                : ""
+                : props.lesson.subject.labsZoom[0]?.url
             }
           >
             {props.lesson.subject.name}
@@ -46,12 +47,12 @@ function Lesson(props: LessonProps) {
                     .writeText(
                       props.lesson.type === "Лек"
                         ? props.lesson.subject.lessonsZoom[0]?.url
-                        : ""
+                        : props.lesson.subject.labsZoom[0]?.url
                     )
                     .then(() => alert("Copied!"))
                 }
               />
-              <i className="far fa-edit" />
+              <i className="far fa-edit" onClick={()=>props.editFunc(props.lesson)}/>
             </div>
           </div>
         </div>

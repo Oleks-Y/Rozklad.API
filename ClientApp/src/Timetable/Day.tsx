@@ -5,6 +5,7 @@ import EmptyLessons from "./EmptyLessons";
 export interface DayProps {
   nameOfDay: string;
   lessons: LessonWithSubject[];
+  editFunc : Function
 }
 
 function Day(props: DayProps) {
@@ -39,7 +40,7 @@ function Day(props: DayProps) {
       items.splice(
         i,
         0,
-        <Lesson key={lessonsSorted[i].id} lesson={lessonsSorted[i]} />
+        <Lesson key={lessonsSorted[i].id} lesson={lessonsSorted[i]} editFunc={props.editFunc}/>
       );
   }
   while (items.length < 5) items.push(<EmptyLessons />);
