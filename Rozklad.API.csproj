@@ -13,6 +13,7 @@
       <PackageReference Include="MongoDB.Driver" Version="2.11.3" />
       <PackageReference Include="React.AspNet" Version="5.2.10" />
       <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
     <!-- <ItemGroup>

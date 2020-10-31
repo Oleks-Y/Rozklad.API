@@ -110,6 +110,7 @@ namespace Rozklad.API.Controllers
             return NoContent();
         }
         // It works ?
+        // Yes 
         [HttpPatch("{studentId:objectId}")]
         public ActionResult PatchStudent(string studentId, [FromBody] JsonPatchDocument<StudentForUpdateDto> patchDocument)
         {

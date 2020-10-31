@@ -1,8 +1,10 @@
 import React, { CSSProperties } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { restApiUrl } from "../../../shared/urls";
+import StudentAuthService from "../../../services/studentAuthService";
 
 function Navbar() {
+  
   const navStyle: CSSProperties = {
     height: "80px",
     backgroundColor: "#37434d",
@@ -11,6 +13,12 @@ function Navbar() {
   const navItemStyle: CSSProperties = {
     color: "#ffffff",
   };
+  
+  const logout = ()=>{
+    const service = new StudentAuthService();
+    service.logout()
+    window.location.reload()
+  }
   return (
     <nav
       className="navbar navbar-light navbar-expand-md sticky-top bg-primary navigation-clean-button"
@@ -51,12 +59,12 @@ function Navbar() {
                 &nbsp;Rozklad
               </Link>
             </li>
-            <li className="nav-item" role="presentation">
-              <a className="nav-link active" style={navItemStyle} href="#">
-                <i className="fa fa-fire-alt" />
-                &nbsp;Deadlines
-              </a>
-            </li>
+            {/*<li className="nav-item" role="presentation">*/}
+            {/*  <a className="nav-link active" style={navItemStyle} href="#">*/}
+            {/*    <i className="fa fa-fire-alt" />*/}
+            {/*    &nbsp;Deadlines*/}
+            {/*  </a>*/}
+            {/*</li>*/}
             <li className="nav-item" role="presentation">
               <Link to={`subjects`} className="nav-link" style={navItemStyle} href="#">
                 <i className="fa fa-list-alt" />
@@ -64,7 +72,7 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <i className="fas fa-sign-out-alt" />
+              <a onClick={logout}><i className="fas fa-sign-out-alt" /></a>
             </li>
             {/*<li className="nav-item" role="presentation">*/}
             {/*    <a className="nav-link active" style={navItemStyle} href="#">*/}
